@@ -1,0 +1,37 @@
+{
+  "name": "ppelisset/fileno",
+  "description": "Map a stream to a file descriptor",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Pierre Pélisset",
+      "email": "ppelisset@hotmail.fr"
+    }
+  ],
+  "autoload": {
+    "files": [
+      "src/fileno.php"
+    ]
+  },
+  "require": {
+    "ext-ffi": "*",
+    "toknot/ffi-extend": "0.1.5",
+    "cweagans/composer-patches": "1.7.2"
+  },
+  "require-dev": {
+    "pestphp/pest": "1.21.3"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true,
+      "cweagans/composer-patches": true
+    }
+  },
+  "extra": {
+    "patches": {
+      "toknot/ffi-extend": {
+        "Append support for darwin/MacOS": "patch/darwin.patch"
+      }
+    }
+  }
+}
