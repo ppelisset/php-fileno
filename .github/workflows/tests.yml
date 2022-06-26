@@ -1,0 +1,35 @@
+name: PHP
+on:
+  push:
+  pull_request:
+jobs:
+  build:
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - os: ubuntu-latest
+            php-version: 8.0
+          - os: ubuntu-latest
+            php-version: 8.1
+          - os: macos-12
+            php-version: 8.1
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ hashFiles('**/tests.yml') }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-php-
+      - name: Install dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: composer install --prefer-dist --no-progress
+      - name: Run test suite
+        run: vendor/bin/pest
