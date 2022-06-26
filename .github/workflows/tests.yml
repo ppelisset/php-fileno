@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php-versions: [ '8.0', '8.1', '8.2' ]
+        php-versions: [ '8.0', '8.1' ]
     steps:
       - uses: actions/checkout@v2
       - name: Setup PHP
@@ -24,6 +24,6 @@ jobs:
           restore-keys: ${{ runner.os }}-php-
       - name: Install dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
-        run: composer install --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
+        run: composer install --prefer-dist --no-progress
       - name: Run test suite
         run: vendor/bin/pest
