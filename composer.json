@@ -10,29 +10,20 @@
   ],
   "autoload": {
     "files": [
-      "src/fileno.php"
+      "src/fileno.php",
+      "src/PHPApi.php"
     ]
   },
   "require": {
     "php": ">=8.0",
-    "ext-ffi": "*",
-    "toknot/ffi-extend": "0.1.5",
-    "cweagans/composer-patches": "1.7.2"
+    "ext-ffi": "*"
   },
   "require-dev": {
     "pestphp/pest": "1.21.3"
   },
   "config": {
     "allow-plugins": {
-      "pestphp/pest-plugin": true,
-      "cweagans/composer-patches": true
-    }
-  },
-  "extra": {
-    "patches": {
-      "toknot/ffi-extend": {
-        "Append support for darwin/MacOS": "./patch/darwin.patch"
-      }
+      "pestphp/pest-plugin": true
     }
   }
 }

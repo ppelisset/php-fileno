@@ -1,25 +1,23 @@
 <?php
 
+use FileNo\PHPApi;
+
 function fileno(mixed $stream): ?int
 {
-    static $ffiExtend = null;
-    if (is_null($ffiExtend)) {
-        define('PHP_FFI_EXTEND_APPEND_CDEF', file_get_contents(__DIR__ . "/php_api.h"));
-        $ffiExtend = new \Toknot\FFIExtend();
-    }
-    if (!is_resource($stream)) {
+    $zval = PHPApi::zval($stream);
+    if (!PHPApi::is_resource($zval)) {
         return null;
     }
-    $zval = $ffiExtend->zval($stream);
-    $phpStream = $ffiExtend->getffi()->zend_fetch_resource2($zval, "stream", $ffiExtend->getffi()->php_file_le_stream(), $ffiExtend->getffi()->php_file_le_pstream());
-    if ($ffiExtend->isNull($phpStream)) {
+    $resource = PHPApi::get_resource_from_zval($zval);
+    $phpStream = PHPApi::zend_fetch_resource2($resource, "stream", PHPApi::php_file_le_stream(), PHPApi::php_file_le_pstream());
+    if (PHPApi::is_null($phpStream)) {
         return null;
     }
     $filenoCData = FFI::new("int");
     $filenoCData->cdata = -1;
     $castTypeList = [3, 1]; // PHP_STREAM_AS_FD_FOR_SELECT, PHP_STREAM_AS_FD
     foreach ($castTypeList as $castType) {
-        $ffiExtend->getffi()->_php_stream_cast($phpStream, $castType, FFI::cast("void *", FFI::addr($filenoCData)), 0);
+        PHPApi::php_stream_cast($phpStream, $castType, FFI::cast("void *", FFI::addr($filenoCData)));
         if ($filenoCData->cdata !== -1) {
             return $filenoCData->cdata;
         }
